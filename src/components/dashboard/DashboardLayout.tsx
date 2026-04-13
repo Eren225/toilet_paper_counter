@@ -3,7 +3,8 @@ import type { DashboardState } from '../../types/dashboard';
 import Icon from './Icon';
 import RoommateCard from './RoommateCard';
 import HistoryModal from './HistoryModal';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import wishIVideo from '../../assets/wishI.mp4';
 
 type DashboardLayoutProps = {
   state: DashboardState;
@@ -19,6 +20,19 @@ export default function DashboardLayout({
   onNewPack,
 }: DashboardLayoutProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [mathisCount, setMathisCount] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const handleAvatarClick = (name: string) => {
+    if (name.toLowerCase() === 'mathisglaude1' || name.toLowerCase().includes('mathisglaude1')) {
+      const newCount = mathisCount + 1;
+      setMathisCount(newCount);
+      if (newCount >= 5) {
+        setShowVideo(true);
+        setMathisCount(0);
+      }
+    }
+  };
   const currentUser = state.roommates.find(({ id }) => id === state.auth.currentUserId);
   const canValidateRoll = Boolean(state.auth.currentUserId);
 
@@ -215,8 +229,9 @@ export default function DashboardLayout({
                 <div className="flex items-center gap-3">
                   <img
                     alt={roommate.name}
-                    className="h-10 w-10 rounded-full object-cover"
+                    className={`h-10 w-10 rounded-full object-cover ${roommate.name.toLowerCase().includes('mathisglaude1') ? 'cursor-pointer active:scale-95 transition' : ''}`}
                     src={roommate.avatar}
+                    onClick={() => handleAvatarClick(roommate.name)}
                   />
                   <div>
                     <p className="text-sm font-bold text-on-surface">{roommate.name}</p>
@@ -246,6 +261,7 @@ export default function DashboardLayout({
                 key={roommate.id}
                 roommate={roommate}
                 onAddRoll={onAddRoll}
+                onAvatarClick={() => handleAvatarClick(roommate.name)}
               />
             ))}
           </div>
@@ -276,6 +292,28 @@ export default function DashboardLayout({
           Valider mon rouleau
         </button>
       </div>
+
+      {/* EASTER EGG VIDEO GLOBALE */}
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+            onClick={() => setShowVideo(false)}
+          >
+            <video 
+              src={wishIVideo} 
+              autoPlay 
+              playsInline
+              onEnded={() => setShowVideo(false)}
+              className="max-h-[70vh] max-w-lg rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] flex-shrink"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
