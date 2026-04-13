@@ -3,6 +3,7 @@ import type { DashboardState } from '../../types/dashboard';
 import Icon from './Icon';
 import RoommateCard from './RoommateCard';
 import HistoryModal from './HistoryModal';
+import { motion } from 'framer-motion';
 
 type DashboardLayoutProps = {
   state: DashboardState;
@@ -18,6 +19,24 @@ export default function DashboardLayout({
   onNewPack,
 }: DashboardLayoutProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+  // Dynamic Colors Logic
+  let stockColor = 'var(--color-primary)';
+  let gradientColor = 'linear-gradient(90deg,var(--color-primary),var(--color-primary-container))';
+  let blurClass = 'bg-primary/8';
+  let textClass = 'text-primary';
+
+  if (state.rollsLeft === 0) {
+    stockColor = '#E11D48'; // Red
+    gradientColor = 'linear-gradient(90deg,#E11D48,#FCA5A5)';
+    blurClass = 'bg-red-500/10';
+    textClass = 'text-red-500';
+  } else if (state.percentLeft <= 25 || state.rollsLeft <= 3) {
+    stockColor = '#F59E0B'; // Orange
+    gradientColor = 'linear-gradient(90deg,#F59E0B,#FCD34D)';
+    blurClass = 'bg-orange-500/10';
+    textClass = 'text-orange-500';
+  }
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
@@ -93,8 +112,17 @@ export default function DashboardLayout({
               <span className="text-xs font-bold uppercase tracking-[0.28em] text-secondary">
                 Stock actuel
               </span>
-              <h2 className="mt-4 text-6xl font-black tracking-[-0.06em] text-on-surface md:text-8xl">
-                {state.rollsLeft}{' '}
+              <h2 className="mt-4 flex items-baseline gap-3 text-6xl font-black tracking-[-0.06em] text-on-surface md:text-8xl">
+                <motion.span
+                  key={state.rollsLeft}
+                  initial={{ y: -10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className={textClass}
+                  style={{ color: stockColor }}
+                >
+                  {state.rollsLeft}
+                </motion.span>
                 <span className="text-2xl font-medium tracking-normal text-on-surface-variant md:text-3xl">
                   rouleaux restants
                 </span>
@@ -102,12 +130,15 @@ export default function DashboardLayout({
 
               <div className="mt-8 flex items-center gap-4">
                 <div className="h-3 flex-1 overflow-hidden rounded-full bg-surface-container-high">
-                  <div
-                    className="h-full rounded-full bg-[linear-gradient(90deg,var(--color-primary),var(--color-primary-container))]"
-                    style={{ width: `${state.percentLeft}%` }}
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${state.percentLeft}%` }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="h-full rounded-full"
+                    style={{ background: gradientColor }}
                   />
                 </div>
-                <span className="font-bold text-primary">{state.percentLeft}%</span>
+                <span className="font-bold" style={{ color: stockColor }}>{state.percentLeft}%</span>
               </div>
 
               <p className="mt-5 text-sm text-on-surface-variant">
@@ -115,7 +146,7 @@ export default function DashboardLayout({
               </p>
             </div>
 
-            <div className="absolute -right-14 -top-14 h-56 w-56 rounded-full bg-primary/8 blur-3xl" />
+            <div className={`absolute -right-14 -top-14 h-56 w-56 rounded-full blur-3xl transition-colors duration-700 ${blurClass}`} />
           </article>
 
           <article className="flex flex-col items-center justify-center rounded-[2rem] bg-primary p-8 text-center text-on-primary shadow-[0_20px_50px_rgba(0,96,173,0.25)] md:col-span-4">

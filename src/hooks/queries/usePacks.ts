@@ -48,7 +48,7 @@ export const useIncrementRoll = () => {
   return useMutation({
     mutationFn: ({ userId, packId }: { userId: string; packId: string }) => 
       UsageService.incrementRoll(userId, packId),
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['usages', variables.packId] });
       queryClient.invalidateQueries({ queryKey: ['allUsages'] });
     },
