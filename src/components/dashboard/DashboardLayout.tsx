@@ -19,6 +19,8 @@ export default function DashboardLayout({
   onNewPack,
 }: DashboardLayoutProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const currentUser = state.roommates.find(({ id }) => id === state.auth.currentUserId);
+  const canValidateRoll = Boolean(state.auth.currentUserId);
 
   // Dynamic Colors Logic
   let stockColor = 'var(--color-primary)';
@@ -43,14 +45,14 @@ export default function DashboardLayout({
       {/* Modale Historique */}
       <HistoryModal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
 
-      <header className="sticky top-0 z-40 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 backdrop-blur md:px-10">
+      <header className="sticky top-0 z-40 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 backdrop-blur md:px-10">
         <div className="flex items-center gap-3">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-on-primary shadow-[0_16px_40px_rgba(0,96,173,0.25)]">
             PQ
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.28em] text-secondary">4eme 204</p>
-            <h1 className="font-display text-2xl font-black tracking-tight text-on-surface">
+            <h1 className="font-display text-xl font-black tracking-tight text-on-surface md:text-2xl">
               PQ Counter
             </h1>
           </div>
@@ -69,7 +71,7 @@ export default function DashboardLayout({
             <Icon name="history" />
           </button>
           <button
-            className="rounded-full bg-primary px-5 py-2 text-sm font-bold text-on-primary shadow-[0_12px_30px_rgba(0,96,173,0.28)] transition hover:scale-[0.98]"
+            className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-on-primary shadow-[0_12px_30px_rgba(0,96,173,0.28)] transition hover:scale-[0.98] md:px-5 md:text-sm"
             onClick={onNewPack}
             type="button"
           >
@@ -78,8 +80,8 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 pb-28 pt-6 md:px-10">
-        <section className="rounded-[2rem] bg-surface-container-low p-5 shadow-[0_16px_40px_rgba(25,40,72,0.05)] md:p-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-28 pt-5 md:gap-10 md:px-10 md:pb-10 md:pt-6">
+        <section className="rounded-[1.5rem] bg-surface-container-low p-4 shadow-[0_16px_40px_rgba(25,40,72,0.05)] md:rounded-[2rem] md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
             <div className="flex-1">
               <p className="text-xs font-bold uppercase tracking-[0.28em] text-on-surface-variant">
@@ -88,7 +90,7 @@ export default function DashboardLayout({
               <h2 className="mt-1 text-xl font-bold text-on-surface">Ton profil personnel</h2>
               <p className="mt-1 text-sm text-on-surface-variant">
                 {state.auth.currentUserId
-                  ? `Connecté en tant que ${state.roommates.find(({ id }) => id === state.auth.currentUserId)?.name || ''}`
+                  ? `Connecté en tant que ${currentUser?.name || ''}`
                   : 'Veuillez vous connecter pour signaler une consommation.'}
               </p>
             </div>
@@ -112,7 +114,7 @@ export default function DashboardLayout({
               <span className="text-xs font-bold uppercase tracking-[0.28em] text-secondary">
                 Stock actuel
               </span>
-              <h2 className="mt-4 flex items-baseline gap-3 text-6xl font-black tracking-[-0.06em] text-on-surface md:text-8xl">
+              <h2 className="mt-3 flex items-baseline gap-3 text-5xl font-black tracking-[-0.06em] text-on-surface md:mt-4 md:text-8xl">
                 <motion.span
                   key={state.rollsLeft}
                   initial={{ y: -10, opacity: 0 }}
@@ -123,7 +125,7 @@ export default function DashboardLayout({
                 >
                   {state.rollsLeft}
                 </motion.span>
-                <span className="text-2xl font-medium tracking-normal text-on-surface-variant md:text-3xl">
+                <span className="text-xl font-medium tracking-normal text-on-surface-variant md:text-3xl">
                   rouleaux restants
                 </span>
               </h2>
@@ -149,9 +151,9 @@ export default function DashboardLayout({
             <div className={`absolute -right-14 -top-14 h-56 w-56 rounded-full blur-3xl transition-colors duration-700 ${blurClass}`} />
           </article>
 
-          <article className="flex flex-col items-center justify-center rounded-[2rem] bg-primary p-8 text-center text-on-primary shadow-[0_20px_50px_rgba(0,96,173,0.25)] md:col-span-4">
+          <article className="flex flex-col items-center justify-center rounded-[1.5rem] bg-primary p-6 text-center text-on-primary shadow-[0_20px_50px_rgba(0,96,173,0.25)] md:col-span-4 md:rounded-[2rem] md:p-8">
             <span className="mb-2 text-sm font-medium text-white/70">Total consommé</span>
-            <div className="text-6xl font-black">{state.usedTotal}</div>
+            <div className="text-5xl font-black md:text-6xl">{state.usedTotal}</div>
           </article>
         </section>
 
@@ -204,7 +206,39 @@ export default function DashboardLayout({
             </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="md:hidden space-y-3">
+            {state.roommates.map((roommate) => (
+              <article
+                className="flex items-center justify-between rounded-2xl border border-outline-variant/20 bg-surface-container-lowest px-4 py-3"
+                key={roommate.id}
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    alt={roommate.name}
+                    className="h-10 w-10 rounded-full object-cover"
+                    src={roommate.avatar}
+                  />
+                  <div>
+                    <p className="text-sm font-bold text-on-surface">{roommate.name}</p>
+                    <p className="text-xs text-on-surface-variant">{roommate.opened} rouleaux</p>
+                  </div>
+                </div>
+                {roommate.id === state.auth.currentUserId ? (
+                  <button
+                    className="rounded-full bg-primary px-3 py-2 text-xs font-bold text-on-primary"
+                    onClick={() => onAddRoll(roommate.id)}
+                    type="button"
+                  >
+                    +1
+                  </button>
+                ) : (
+                  <span className="text-xs font-medium text-on-surface-variant">{roommate.lastActive}</span>
+                )}
+              </article>
+            ))}
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-2 md:gap-6 xl:grid-cols-4">
             {state.roommates.map((roommate) => (
               <RoommateCard
                 isActiveUser={roommate.id === state.auth.currentUserId}
@@ -227,23 +261,22 @@ export default function DashboardLayout({
         </footer>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-around border-t border-outline-variant/10 bg-surface-container-lowest px-6 py-3 md:hidden">
-        {[
-          { icon: 'dashboard' as const, label: 'Accueil', active: true },
-          { icon: 'group' as const, label: 'Coloc', active: false },
-          { icon: 'box' as const, label: 'Stock', active: false },
-          { icon: 'settings' as const, label: 'Menu', active: false },
-        ].map((item) => (
-          <button
-            className={`flex flex-col items-center gap-1 ${item.active ? 'text-primary' : 'text-on-surface-variant'}`}
-            key={item.label}
-            type="button"
-          >
-            <Icon name={item.icon} />
-            <span className="text-[10px] font-bold">{item.label}</span>
-          </button>
-        ))}
-      </nav>
+      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+        <button
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-black text-on-primary shadow-[0_18px_42px_rgba(0,96,173,0.34)] transition hover:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={!canValidateRoll}
+          onClick={() => {
+            if (state.auth.currentUserId) {
+              onAddRoll(state.auth.currentUserId);
+            }
+          }}
+          type="button"
+        >
+          <Icon name="plus" className="h-6 w-6" />
+          Valider mon rouleau
+        </button>
+      </div>
+
     </div>
   );
 }
