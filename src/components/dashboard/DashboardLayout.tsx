@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { DashboardState } from '../../types/dashboard';
 import Icon from './Icon';
 import RoommateCard from './RoommateCard';
+import HistoryModal from './HistoryModal';
 
 type DashboardLayoutProps = {
   state: DashboardState;
@@ -15,8 +17,13 @@ export default function DashboardLayout({
   onAddRoll,
   onNewPack,
 }: DashboardLayoutProps) {
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-surface text-on-surface">
+      {/* Modale Historique */}
+      <HistoryModal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+
       <header className="sticky top-0 z-40 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 backdrop-blur md:px-10">
         <div className="flex items-center gap-3">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-on-primary shadow-[0_16px_40px_rgba(0,96,173,0.25)]">
@@ -38,6 +45,8 @@ export default function DashboardLayout({
           <button
             className="rounded-full p-2 text-on-surface-variant transition hover:bg-surface-container-low"
             type="button"
+            onClick={() => setIsHistoryOpen(true)}
+            title="Ouvrir l'historique"
           >
             <Icon name="history" />
           </button>
@@ -116,6 +125,7 @@ export default function DashboardLayout({
             <button
               className="mt-6 rounded-full bg-white/20 px-6 py-3 text-sm font-bold backdrop-blur transition hover:bg-white/30"
               type="button"
+              onClick={() => setIsHistoryOpen(true)}
             >
               Historique complet
             </button>

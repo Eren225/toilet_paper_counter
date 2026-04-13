@@ -20,5 +20,14 @@ export const UsageService = {
 
     if (error) throw error;
     return data;
+  },
+
+  async getAllUsages() {
+    const { data, error } = await supabaseClient
+      .from('usages')
+      .select('*, user:profiles!user_id(name)');
+
+    if (error) throw error;
+    return data || [];
   }
 };

@@ -28,5 +28,15 @@ export const PackService = {
 
     if (error) throw error;
     return data;
+  },
+
+  async getAllPacks() {
+    const { data, error } = await supabaseClient
+      .from('packs')
+      .select('*, buyer:profiles!buyer_id(name)')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
   }
 };

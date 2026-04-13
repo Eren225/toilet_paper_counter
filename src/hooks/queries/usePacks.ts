@@ -9,6 +9,20 @@ export const useCurrentPack = () => {
   });
 };
 
+export const useAllPacks = () => {
+  return useQuery({
+    queryKey: ['allPacks'],
+    queryFn: () => PackService.getAllPacks(),
+  });
+};
+
+export const useAllUsages = () => {
+  return useQuery({
+    queryKey: ['allUsages'],
+    queryFn: () => UsageService.getAllUsages(),
+  });
+};
+
 export const useUsagesForPack = (packId?: string) => {
   return useQuery({
     queryKey: ['usages', packId],
