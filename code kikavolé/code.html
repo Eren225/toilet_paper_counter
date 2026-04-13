@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Le Traqueur de PQ - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be_Vietnam_Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-secondary-fixed-variant": "#0c693d",
+                "on-error-container": "#6e0a12",
+                "on-tertiary-fixed": "#464e50",
+                "inverse-surface": "#0c0e12",
+                "on-error": "#fff7f6",
+                "surface-bright": "#f9f9fe",
+                "surface-dim": "#d6dae4",
+                "error": "#a83836",
+                "inverse-primary": "#68abff",
+                "on-tertiary": "#f2fafc",
+                "on-surface": "#2e333a",
+                "error-container": "#fa746f",
+                "on-secondary-container": "#005e35",
+                "surface-container-high": "#e6e8f0",
+                "tertiary": "#586062",
+                "on-primary": "#f8f8ff",
+                "background": "#f9f9fe",
+                "tertiary-container": "#f3fbfd",
+                "on-secondary": "#e7ffea",
+                "tertiary-fixed": "#f3fbfd",
+                "inverse-on-surface": "#9c9da1",
+                "secondary": "#136d41",
+                "on-background": "#2e333a",
+                "surface-container-low": "#f2f3fa",
+                "on-surface-variant": "#5b5f67",
+                "secondary-container": "#a1f5bc",
+                "primary-container": "#68abff",
+                "surface": "#f9f9fe",
+                "on-primary-fixed-variant": "#003461",
+                "surface-variant": "#dfe2ec",
+                "on-primary-container": "#002b52",
+                "error-dim": "#67040d",
+                "surface-container": "#eceef5",
+                "on-tertiary-fixed-variant": "#636b6d",
+                "primary-fixed": "#68abff",
+                "tertiary-dim": "#4c5456",
+                "primary-fixed-dim": "#599ef1",
+                "secondary-dim": "#006036",
+                "secondary-fixed": "#a1f5bc",
+                "secondary-fixed-dim": "#93e6af",
+                "primary": "#0060ad",
+                "outline-variant": "#aeb2bb",
+                "on-tertiary-container": "#586062",
+                "surface-container-lowest": "#ffffff",
+                "on-primary-fixed": "#000c1e",
+                "on-secondary-fixed": "#004a28",
+                "tertiary-fixed-dim": "#e4ecee",
+                "primary-dim": "#005498",
+                "surface-container-highest": "#dfe2ec",
+                "surface-tint": "#0060ad",
+                "outline": "#777b83"
+            },
+            "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Be Vietnam Pro"],
+                "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3, .display-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-panel {
+            background: rgba(249, 249, 254, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopNavBar (Mobile/Tablet) -->
+<header class="bg-[#f9f9fe] dark:bg-slate-950 flex justify-between items-center w-full px-6 py-4 max-w-screen-xl mx-auto sticky top-0 z-40">
+<div class="flex items-center gap-2">
+<span class="text-2xl font-black text-[#2e333a] dark:text-white font-['Plus_Jakarta_Sans'] tracking-tight">Curated Sanctuary</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-6 mr-4">
+<span class="text-[#0060ad] dark:text-[#68abff] font-bold">Dashboard</span>
+<span class="text-[#5b5f67] dark:text-slate-400">History</span>
+</div>
+<button class="p-2 rounded-full text-[#5b5f67] hover:bg-[#f2f3fa]">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button id="reset-pack-btn" class="bg-primary px-5 py-2 rounded-full text-on-primary font-bold text-sm hover:scale-95 transition-transform">
+                Pack Reset
+            </button>
+</div>
+</header>
+<section class="px-6 md:px-10 max-w-7xl mx-auto mt-6">
+<div class="bg-surface-container-low rounded-xl p-4 md:p-5 flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
+<div class="flex-1">
+<p class="text-xs uppercase tracking-widest font-bold text-on-surface-variant">Connexion</p>
+<h2 class="text-xl font-bold text-on-surface mt-1">Ton profil personnel</h2>
+<p id="auth-status" class="text-sm text-on-surface-variant mt-1">Non connecte</p>
+<p class="text-xs text-on-surface-variant mt-1">Mot de passe demo: prenom123 (ex: elie123)</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
+<select id="login-user" class="rounded-full bg-surface-container-high border-0 px-4 py-3 text-sm font-semibold">
+<option value="elie">Elie</option>
+<option value="erwan">Erwan</option>
+<option value="matteo">Matteo</option>
+<option value="mathis">Mathis</option>
+</select>
+<input id="login-password" type="password" placeholder="Mot de passe" class="rounded-full bg-surface-container-high border-0 px-4 py-3 text-sm"/>
+<div class="flex gap-2">
+<button id="login-btn" class="flex-1 bg-primary text-on-primary rounded-full px-4 py-3 text-sm font-bold">Se connecter</button>
+<button id="logout-btn" class="flex-1 bg-surface-container-high rounded-full px-4 py-3 text-sm font-bold text-on-surface">Se deconnecter</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Canvas -->
+<main class="p-6 md:p-10 max-w-7xl mx-auto">
+<!-- Hero Section: Stats -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+<div class="md:col-span-8 bg-surface-container-low rounded-xl p-8 flex flex-col justify-between relative overflow-hidden">
+<div class="relative z-10">
+<span class="text-secondary font-bold uppercase tracking-widest text-xs">Current Stock</span>
+<h1 class="text-7xl md:text-8xl font-black text-on-surface mt-4 tracking-tighter"><span id="rolls-left">12</span> <span class="text-3xl font-medium tracking-normal text-on-surface-variant">Rolls left</span></h1>
+<div class="mt-8 flex items-center gap-4">
+<div class="h-3 flex-1 bg-surface-container-high rounded-full overflow-hidden">
+<div id="stock-bar" class="h-full bg-gradient-to-r from-primary to-primary-container rounded-full" style="width: 75%;"></div>
+</div>
+<span id="stock-percent" class="font-bold text-primary">75%</span>
+</div>
+</div>
+<!-- Decorative Abstract Element -->
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+</div>
+<div class="md:col-span-4 bg-primary text-on-primary rounded-xl p-8 flex flex-col justify-center items-center text-center">
+<span class="text-on-primary/60 font-medium mb-2">Total rolls used</span>
+<div id="used-total" class="text-6xl font-black mb-4">8</div>
+<button class="mt-4 bg-white/20 hover:bg-white/30 backdrop-blur-md px-6 py-3 rounded-full text-sm font-bold transition-all">
+                    View Full History
+                </button>
+</div>
+</section>
+<!-- Roommate Bento Grid -->
+<div class="mb-6 flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-bold text-on-surface">Roommates</h2>
+<p class="text-on-surface-variant mt-1">Individual tracking for this pack period.</p>
+</div>
+<div class="hidden md:block">
+<span id="active-users" class="secondary-fixed text-on-secondary-fixed px-4 py-2 rounded-full text-sm font-semibold">4 Active Users</span>
+</div>
+</div>
+<section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-16">
+<!-- Card: Elie -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-xl transition-all duration-300 group">
+<div class="flex items-center gap-4 mb-6">
+<img alt="Elie" class="w-14 h-14 rounded-full object-cover ring-4 ring-surface-container" data-alt="Close up portrait of a young man with curly hair smiling in soft natural light outdoors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj4f2p9f3inHobYwd-OqukkCZ3N55iqXsMtjSeW_5w8wzbFutkE8VqFqtJ3tUK6SrgcRJsVofV2k-rlmLjxLOrZ9y17FU8BWph449fSFmqXSTzWDSdwZPCaoaGlCrZyqQL8pbCJMk02Hx3i5Xqoin9Nu-EQ-tGD6Y-I6Bjc_b0ta7eutP4f_c0DIs8MiyEzkxAuGCBICZccg-vpZrD6Qvkpzx1zRISIKUclPynFCb0z6DkaEV2fdT1i4Y5kdFO5G03hICwGLsYKp0n"/>
+<div>
+<h3 class="font-bold text-lg">Elie</h3>
+<p id="elie-active" class="text-xs text-on-surface-variant">Last active: 2h ago</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 mb-6">
+<p class="text-xs font-bold text-on-surface-variant uppercase mb-1">Rouleaux ouverts</p>
+<div id="elie-opened" class="text-3xl font-black text-primary">2</div>
+</div>
+<button data-userid="elie" class="use-roll-btn w-full py-4 bg-surface-container-high group-hover:bg-primary group-hover:text-on-primary rounded-full flex items-center justify-center gap-2 font-bold transition-all">
+<span class="material-symbols-outlined">add</span>
+                    J'ai ouvert un rouleau
+                </button>
+</div>
+<!-- Card: Erwan -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-xl transition-all duration-300 group">
+<div class="flex items-center gap-4 mb-6">
+<img alt="Erwan" class="w-14 h-14 rounded-full object-cover ring-4 ring-surface-container" data-alt="Portrait of a friendly young man with glasses wearing a casual sweater in a bright interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCchk6ABArFCerTZFP8YFCpFT7LQfQ5nzbnBUcdTFm3yy37e-a8U5jaNMkR_V7aCH3UJklofOgeP5jUquxkV_axx96TdYLLcHpx9o_Qz5O1Psh0bd-t9Yq2TFpZusvuUJxkYqGIyJfGSQJgwTN-uIgfyfnQAVF5CejHVYihqx8CeRyV1jkS4e7rFnGn1jWw5pGg4w_3rC2mbHh2-ZvlEl6vgSpESwDnxlHtrGqDmEF_qMQ8kfZig26TxBw_6pXI5Bw3svvtzjAkErR6"/>
+<div>
+<h3 class="font-bold text-lg">Erwan</h3>
+<p id="erwan-active" class="text-xs text-on-surface-variant">Last active: 5h ago</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 mb-6">
+<p class="text-xs font-bold text-on-surface-variant uppercase mb-1">Rouleaux ouverts</p>
+<div id="erwan-opened" class="text-3xl font-black text-primary">3</div>
+</div>
+<button data-userid="erwan" class="use-roll-btn w-full py-4 bg-surface-container-high group-hover:bg-primary group-hover:text-on-primary rounded-full flex items-center justify-center gap-2 font-bold transition-all">
+<span class="material-symbols-outlined">add</span>
+                    J'ai ouvert un rouleau
+                </button>
+</div>
+<!-- Card: Matteo -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-xl transition-all duration-300 group">
+<div class="flex items-center gap-4 mb-6">
+<img alt="Matteo" class="w-14 h-14 rounded-full object-cover ring-4 ring-surface-container" data-alt="Headshot of a confident young man with a short beard against a neutral soft-lit wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtqXzA5q8r03-ratRoijFmXGEZvG9tU09OFq_zh4HDJY15-Ngz0FNxHfNg5SA5_ucwazNLQxQVvhVtNJWW2tsL2kHaAEJDz79clot6E4d5bvIS5X8Xp3O1BNozuSUeohjDAjBZVnNf0tG42wEKsyVTpGNdhmjn7Ls84BaeVmc3H5qDBzqYatg95mg0r4cmQTnovrI-xfpioa0f2XLAePd4ioi_OYwa2hl1eJusPAu0ndQsfwmR1-F12ysio4XCR-KlQL4_CI-dp3Ni"/>
+<div>
+<h3 class="font-bold text-lg">Matteo</h3>
+<p id="matteo-active" class="text-xs text-on-surface-variant">Last active: Yesterday</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 mb-6">
+<p class="text-xs font-bold text-on-surface-variant uppercase mb-1">Rouleaux ouverts</p>
+<div id="matteo-opened" class="text-3xl font-black text-primary">1</div>
+</div>
+<button data-userid="matteo" class="use-roll-btn w-full py-4 bg-surface-container-high group-hover:bg-primary group-hover:text-on-primary rounded-full flex items-center justify-center gap-2 font-bold transition-all">
+<span class="material-symbols-outlined">add</span>
+                    J'ai ouvert un rouleau
+                </button>
+</div>
+<!-- Card: Mathis -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:shadow-xl transition-all duration-300 group">
+<div class="flex items-center gap-4 mb-6">
+<img alt="Mathis" class="w-14 h-14 rounded-full object-cover ring-4 ring-surface-container" data-alt="Candid portrait of a creative young person in a stylish studio with soft warm cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA-IcLaw6OUdrWB1NwNoTNUln0ABfbYNd0CQ6X98UboOPw3OO0ohR3YaNLHZ6jrsHVgMwvvVtYMj2AajmLd9xaDbLwdl9yHuOYfdMKVD_ba8K1B3ptXk37RQQVuYXd-phmsxUS2qi8O_4HX9AEQU74YXZ4g7UsfLdQ4QAjsfE7cXQFRyDiqEdfAySw7E7UjwD7oi0TDTBMwSc99Ie7DKjmPxUx8ZV2B_ipwAFlekVZ9VE-DSSVuhQ8oB3r1MRVCL-OI0aDEP-8TsEi"/>
+<div>
+<h3 class="font-bold text-lg">Mathis</h3>
+<p id="mathis-active" class="text-xs text-on-surface-variant">Last active: 1h ago</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 mb-6">
+<p class="text-xs font-bold text-on-surface-variant uppercase mb-1">Rouleaux ouverts</p>
+<div id="mathis-opened" class="text-3xl font-black text-primary">2</div>
+</div>
+<button data-userid="mathis" class="use-roll-btn w-full py-4 bg-surface-container-high group-hover:bg-primary group-hover:text-on-primary rounded-full flex items-center justify-center gap-2 font-bold transition-all">
+<span class="material-symbols-outlined">add</span>
+                    J'ai ouvert un rouleau
+                </button>
+</div>
+</section>
+<!-- Footer Note -->
+<footer class="mt-12 text-center pb-12">
+<div class="inline-flex items-center gap-3 bg-surface-container p-4 rounded-full text-on-surface-variant text-sm font-medium">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">security</span>
+                Monitorons ensemble pour éviter les vols !
+            </div>
+</footer>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-outline-variant/10 px-6 py-3 flex justify-around items-center z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-medium">Peeps</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-medium">Stock</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Menu</span>
+</button>
+</nav>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+            const roommateIds = ["elie", "erwan", "matteo", "mathis"];
+            const socket = window.io ? window.io() : null;
+            const userNameById = {
+                elie: "Elie",
+                erwan: "Erwan",
+                matteo: "Matteo",
+                mathis: "Mathis"
+            };
+
+            let authToken = localStorage.getItem("pqAuthToken") || "";
+            let currentUserId = localStorage.getItem("pqUserId") || "";
+
+            function getAuthHeaders() {
+                if (!authToken) {
+                    return {
+                        "Content-Type": "application/json"
+                    };
+                }
+
+                return {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authToken}`
+                };
+            }
+
+            function setAuth(userId, token) {
+                currentUserId = userId || "";
+                authToken = token || "";
+
+                if (authToken && currentUserId) {
+                    localStorage.setItem("pqAuthToken", authToken);
+                    localStorage.setItem("pqUserId", currentUserId);
+                } else {
+                    localStorage.removeItem("pqAuthToken");
+                    localStorage.removeItem("pqUserId");
+                }
+
+                applyAuthUI();
+            }
+
+            function applyAuthUI() {
+                const authStatus = document.getElementById("auth-status");
+                const resetButton = document.getElementById("reset-pack-btn");
+                if (currentUserId) {
+                    authStatus.textContent = `Connecte en tant que ${userNameById[currentUserId] || currentUserId}`;
+                } else {
+                    authStatus.textContent = "Non connecte";
+                }
+
+                resetButton.disabled = !currentUserId;
+                resetButton.classList.toggle("opacity-50", !currentUserId);
+                resetButton.classList.toggle("cursor-not-allowed", !currentUserId);
+
+                document.querySelectorAll(".use-roll-btn").forEach((button) => {
+                    const buttonUserId = button.dataset.userid;
+                    const canUse = currentUserId && buttonUserId === currentUserId;
+
+                    button.disabled = !canUse;
+                    button.classList.toggle("opacity-50", !canUse);
+                    button.classList.toggle("cursor-not-allowed", !canUse);
+                });
+            }
+
+            function renderState(state) {
+                document.getElementById("rolls-left").textContent = state.rollsLeft;
+                document.getElementById("stock-percent").textContent = `${state.percentLeft}%`;
+                document.getElementById("stock-bar").style.width = `${state.percentLeft}%`;
+                document.getElementById("used-total").textContent = state.usedTotal;
+                document.getElementById("active-users").textContent = `${state.roommates.length} Active Users`;
+
+                state.roommates.forEach((roommate) => {
+                    const countNode = document.getElementById(`${roommate.id}-opened`);
+                    const activeNode = document.getElementById(`${roommate.id}-active`);
+
+                    if (countNode) {
+                        countNode.textContent = roommate.opened;
+                    }
+                    if (activeNode) {
+                        activeNode.textContent = `Last active: ${roommate.lastActive}`;
+                    }
+                });
+            }
+
+            async function fetchState() {
+                const response = await fetch("/api/state");
+                if (!response.ok) {
+                    throw new Error("Impossible de charger l'etat");
+                }
+                const state = await response.json();
+                renderState(state);
+            }
+
+            async function restoreSession() {
+                if (!authToken) {
+                    applyAuthUI();
+                    return;
+                }
+
+                const response = await fetch("/api/me", {
+                    headers: {
+                        "Authorization": `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    setAuth("", "");
+                    return;
+                }
+
+                const me = await response.json();
+                setAuth(me.userId, authToken);
+            }
+
+            async function loginUser() {
+                const userId = document.getElementById("login-user").value;
+                const password = document.getElementById("login-password").value;
+
+                const response = await fetch("/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ userId, password })
+                });
+
+                if (!response.ok) {
+                    const payload = await response.json().catch(() => null);
+                    if (response.status === 404) {
+                        throw new Error("Serveur non a jour: endpoint /api/login introuvable. Redemarre npm start sur ce projet.");
+                    }
+                    throw new Error((payload && payload.error) || "Identifiants invalides");
+                }
+
+                const payload = await response.json();
+                setAuth(payload.userId, payload.token);
+                document.getElementById("login-password").value = "";
+            }
+
+            async function logoutUser() {
+                if (!authToken) {
+                    setAuth("", "");
+                    return;
+                }
+
+                await fetch("/api/logout", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${authToken}`
+                    }
+                }).catch(() => {});
+
+                setAuth("", "");
+            }
+
+            async function postUsage(userId) {
+                const response = await fetch("/api/usage", {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ userId })
+                });
+
+                if (!response.ok) {
+                    const payload = await response.json().catch(() => ({ error: "Erreur inconnue" }));
+                    throw new Error(payload.error || "Erreur lors de la mise a jour");
+                }
+
+                const state = await response.json();
+                renderState(state);
+            }
+
+            async function resetPack() {
+                if (!currentUserId) {
+                    throw new Error("Connecte-toi pour reset le pack.");
+                }
+
+                const response = await fetch("/api/reset", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const payload = await response.json().catch(() => null);
+                    throw new Error((payload && payload.error) || "Impossible de reset le pack");
+                }
+
+                const state = await response.json();
+                renderState(state);
+            }
+
+            document.querySelectorAll(".use-roll-btn").forEach((button) => {
+                button.addEventListener("click", async () => {
+                    const userId = button.dataset.userid;
+                    if (!roommateIds.includes(userId)) {
+                        return;
+                    }
+
+                    if (!currentUserId || userId !== currentUserId) {
+                        alert("Connecte-toi avec ton profil pour ajouter un rouleau.");
+                        return;
+                    }
+
+                    button.disabled = true;
+                    try {
+                        await postUsage(userId);
+                    } catch (error) {
+                        alert(error.message);
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            });
+
+            document.getElementById("reset-pack-btn").addEventListener("click", async () => {
+                try {
+                    await resetPack();
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
+
+            document.getElementById("login-btn").addEventListener("click", async () => {
+                try {
+                    await loginUser();
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
+
+            document.getElementById("logout-btn").addEventListener("click", async () => {
+                await logoutUser();
+            });
+
+            document.getElementById("login-password").addEventListener("keydown", async (event) => {
+                if (event.key === "Enter") {
+                    try {
+                        await loginUser();
+                    } catch (error) {
+                        alert(error.message);
+                    }
+                }
+            });
+
+            fetchState().catch((error) => {
+                console.error(error);
+            });
+
+            restoreSession().catch(() => {
+                setAuth("", "");
+            });
+
+            if (socket) {
+                socket.on("state:update", (state) => {
+                    renderState(state);
+                });
+            } else {
+                setInterval(() => {
+                    fetchState().catch(() => {});
+                }, 5000);
+            }
+        </script>
+</body></html>

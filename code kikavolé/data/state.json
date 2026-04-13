@@ -1,0 +1,30 @@
+{
+  "packSize": 20,
+  "roommates": [
+    {
+      "id": "elie",
+      "name": "Elie",
+      "opened": 0,
+      "lastActive": "Jamais"
+    },
+    {
+      "id": "erwan",
+      "name": "Erwan",
+      "opened": 0,
+      "lastActive": "Jamais"
+    },
+    {
+      "id": "matteo",
+      "name": "Matteo",
+      "opened": 0,
+      "lastActive": "Jamais"
+    },
+    {
+      "id": "mathis",
+      "name": "Mathis",
+      "opened": 0,
+      "lastActive": "Jamais"
+    }
+  ],
+  "updatedAt": "2026-04-13T10:20:09.486Z"
+}
