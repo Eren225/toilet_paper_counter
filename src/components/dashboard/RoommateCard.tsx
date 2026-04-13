@@ -30,7 +30,7 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
   return (
     <motion.article 
       whileHover={{ y: -4 }}
-      className="group rounded-[1.75rem] border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-[0_18px_40px_rgba(20,33,61,0.06)]"
+      className="group rounded-[1.75rem] bg-surface-container-lowest p-6 shadow-[0_18px_40px_rgba(20,33,61,0.06)]"
     >
       <div className="mb-6 flex items-center gap-4">
         <img
@@ -61,7 +61,7 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
 
       <motion.button
         whileTap={isActiveUser && !isStockEmpty ? { scale: 0.95 } : {}}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-surface-container-high px-5 py-4 text-sm font-bold text-on-surface transition group-hover:bg-primary group-hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-50 disabled:group-hover:bg-surface-container-high disabled:group-hover:text-on-surface"
+        className="flex w-full items-center justify-center gap-2 rounded-full bg-surface-container-high px-5 py-4 text-sm font-bold text-on-surface transition group-hover:bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-container))] group-hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-50 disabled:group-hover:bg-surface-container-high disabled:group-hover:text-on-surface"
         disabled={!isActiveUser || isStockEmpty}
         onClick={() => onAddRoll(roommate.id)}
         type="button"

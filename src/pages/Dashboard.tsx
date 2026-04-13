@@ -83,9 +83,20 @@ export default function Dashboard() {
   const handleNewPack = () => {
     if (!userProfile) return;
     const rollsCount = window.prompt("Combien de rouleaux dans ce nouveau paquet ?", "16");
-    if (rollsCount) {
-        createPackMutation.mutate({ buyerId: userProfile.id, totalRolls: parseInt(rollsCount, 10) });
+    if (rollsCount === null) return;
+
+    const totalRolls = parseInt(rollsCount.trim(), 10);
+    if (!Number.isFinite(totalRolls) || totalRolls <= 0) {
+      window.alert('Veuillez entrer un nombre de rouleaux valide (supérieur à 0).');
+      return;
     }
+
+    const confirmed = window.confirm(
+      `Confirmer la création d'un nouveau pack de ${totalRolls} rouleaux ? Cette action réinitialise le pack en cours.`
+    );
+    if (!confirmed) return;
+
+    createPackMutation.mutate({ buyerId: userProfile.id, totalRolls });
   };
 
   const activeUsers = profiles?.length || 4;
@@ -93,6 +104,31 @@ export default function Dashboard() {
   const usedTotal = usages.length;
   const rollsLeft = Math.max(0, totalRolls - usedTotal);
   const percentLeft = totalRolls > 0 ? Math.round((rollsLeft / totalRolls) * 100) : 0;
+
+  // Real depletion estimate based on average time between actual usages.
+  const estimatedDepletion = (() => {
+    if (rollsLeft === 0) return 'maintenant';
+    if (usages.length < 2) return 'données insuffisantes';
+
+    const timestamps = usages
+      .map((u) => new Date(u.created_at).getTime())
+      .filter((t) => Number.isFinite(t))
+      .sort((a, b) => a - b);
+
+    if (timestamps.length < 2) return 'données insuffisantes';
+
+    const intervals: number[] = [];
+    for (let i = 1; i < timestamps.length; i += 1) {
+      const delta = timestamps[i] - timestamps[i - 1];
+      if (delta > 0) intervals.push(delta);
+    }
+
+    if (intervals.length === 0) return 'données insuffisantes';
+
+    const avgIntervalMs = intervals.reduce((sum, d) => sum + d, 0) / intervals.length;
+    const depletionDate = dayjs().add(Math.round(avgIntervalMs * rollsLeft), 'millisecond');
+    return `dans ${depletionDate.fromNow(true)}`;
+  })();
   
   // Buyer tracking
   const lastBuyer = pack?.buyer?.name || 'Inconnu';
@@ -127,6 +163,7 @@ export default function Dashboard() {
     rollsLeft,
     usedTotal,
     percentLeft,
+    estimatedDepletion,
     activeUsers,
     lastBuyer,
     nextBuyer,
