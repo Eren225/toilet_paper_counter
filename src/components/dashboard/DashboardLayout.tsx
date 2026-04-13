@@ -6,6 +6,7 @@ import AnalysisModal from './AnalysisModal';
 import RoommateCard from './RoommateCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import wishIVideo from '../../assets/wishI.mp4';
+import iamVideo from '../../assets/iam.mp4';
 
 type DashboardLayoutProps = {
   state: DashboardState;
@@ -24,6 +25,8 @@ export default function DashboardLayout({
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
   const [mathisCount, setMathisCount] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [erwanCount, setErwanCount] = useState(0);
+  const [showIamVideo, setShowIamVideo] = useState(false);
 
   const handleAvatarClick = (username: string) => {
     if (username === 'Mathis_bite') {
@@ -32,6 +35,13 @@ export default function DashboardLayout({
       if (newCount === 5) {
         setShowVideo(true);
         setMathisCount(0);
+      }
+    } else if (username === 'Erwan 67') {
+      const newCount = erwanCount + 1;
+      setErwanCount(newCount);
+      if (newCount === 5) {
+        setShowIamVideo(true);
+        setErwanCount(0);
       }
     }
   };
@@ -310,6 +320,28 @@ export default function DashboardLayout({
               autoPlay 
               playsInline
               onEnded={() => setShowVideo(false)}
+              className="max-h-[70vh] max-w-lg rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] flex-shrink"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* EASTER EGG VIDEO ERWAN */}
+      <AnimatePresence>
+        {showIamVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+            onClick={() => setShowIamVideo(false)}
+          >
+            <video 
+              src={iamVideo} 
+              autoPlay 
+              playsInline
+              onEnded={() => setShowIamVideo(false)}
               className="max-h-[70vh] max-w-lg rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] flex-shrink"
               onClick={(e) => e.stopPropagation()}
             />
