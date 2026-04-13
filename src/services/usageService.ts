@@ -22,6 +22,15 @@ export const UsageService = {
     return data;
   },
 
+  async deleteUsage(usageId: string) {
+    const { error } = await supabaseClient
+      .from('usages')
+      .delete()
+      .eq('id', usageId);
+
+    if (error) throw error;
+  },
+
   async getAllUsages() {
     const { data, error } = await supabaseClient
       .from('usages')

@@ -1,11 +1,12 @@
 ﻿import DashboardLayout from '../components/dashboard/DashboardLayout';
 import type { DashboardState, Roommate } from '../types/dashboard';
 import { useAuthUser, useProfiles, useSignOut } from '../hooks/queries/useAuth';
-import { useCurrentPack, useUsagesForPack, useCreatePack, useIncrementRoll } from '../hooks/queries/usePacks';
+import { useCurrentPack, useUsagesForPack, useCreatePack, useIncrementRoll, useDeleteUsage } from '../hooks/queries/usePacks';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Login from './Login';
+import toast, { Toaster } from 'react-hot-toast';
 
 dayjs.extend(relativeTime);
 dayjs.locale('fr');
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const signOutMutation = useSignOut();
   const createPackMutation = useCreatePack();
   const incrementRollMutation = useIncrementRoll();
+  const deleteUsageMutation = useDeleteUsage();
 
   if (isUserLoading) {
     return (
