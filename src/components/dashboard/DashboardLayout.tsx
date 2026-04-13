@@ -208,6 +208,7 @@ export default function DashboardLayout({
             {state.roommates.map((roommate) => (
               <RoommateCard
                 isActiveUser={roommate.id === state.auth.currentUserId}
+                isStockEmpty={state.rollsLeft === 0}
                 key={roommate.id}
                 roommate={roommate}
                 onAddRoll={onAddRoll}

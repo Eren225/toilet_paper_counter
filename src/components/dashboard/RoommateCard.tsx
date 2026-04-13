@@ -5,10 +5,11 @@ import { motion } from 'framer-motion';
 type RoommateCardProps = {
   roommate: Roommate;
   isActiveUser: boolean;
+  isStockEmpty?: boolean;
   onAddRoll: (roommateId: string) => void;
 };
 
-export default function RoommateCard({ roommate, isActiveUser, onAddRoll }: RoommateCardProps) {
+export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onAddRoll }: RoommateCardProps) {
   return (
     <motion.article 
       whileHover={{ y: -4 }}
@@ -41,14 +42,23 @@ export default function RoommateCard({ roommate, isActiveUser, onAddRoll }: Room
       </div>
 
       <motion.button
-        whileTap={isActiveUser ? { scale: 0.95 } : {}}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-surface-container-high px-5 py-4 text-sm font-bold text-on-surface transition group-hover:bg-primary group-hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-50"
-        disabled={!isActiveUser}
+        whileTap={isActiveUser && !isStockEmpty ? { scale: 0.95 } : {}}
+        className="flex w-full items-center justify-center gap-2 rounded-full bg-surface-container-high px-5 py-4 text-sm font-bold text-on-surface transition group-hover:bg-primary group-hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-50 disabled:group-hover:bg-surface-container-high disabled:group-hover:text-on-surface"
+        disabled={!isActiveUser || isStockEmpty}
         onClick={() => onAddRoll(roommate.id)}
         type="button"
       >
-        <Icon name="plus" />
-        J&apos;ai ouvert un rouleau
+        {isStockEmpty ? (
+          <>
+            <Icon name="box" />
+            Stock vide
+          </>
+        ) : (
+          <>
+            <Icon name="plus" />
+            J&apos;ai ouvert un rouleau
+          </>
+        )}
       </motion.button>
     </motion.article>
   );
