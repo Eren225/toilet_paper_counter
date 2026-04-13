@@ -40,7 +40,6 @@ export default function DashboardLayout({
         <div className="flex items-center gap-4">
           <div className="hidden items-center gap-6 md:flex">
             <span className="font-bold text-primary">Dashboard</span>
-            <span className="text-on-surface-variant">Historique</span>
           </div>
           <button
             className="rounded-full p-2 text-on-surface-variant transition hover:bg-surface-container-low"
@@ -122,13 +121,6 @@ export default function DashboardLayout({
           <article className="flex flex-col items-center justify-center rounded-[2rem] bg-primary p-8 text-center text-on-primary shadow-[0_20px_50px_rgba(0,96,173,0.25)] md:col-span-4">
             <span className="mb-2 text-sm font-medium text-white/70">Total consommé</span>
             <div className="text-6xl font-black">{state.usedTotal}</div>
-            <button
-              className="mt-6 rounded-full bg-white/20 px-6 py-3 text-sm font-bold backdrop-blur transition hover:bg-white/30"
-              type="button"
-              onClick={() => setIsHistoryOpen(true)}
-            >
-              Historique complet
-            </button>
           </article>
         </section>
 
