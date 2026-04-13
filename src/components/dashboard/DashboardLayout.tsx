@@ -3,6 +3,9 @@ import type { DashboardState } from '../../types/dashboard';
 import Icon from './Icon';
 import HistoryModal from './HistoryModal';
 import AnalysisModal from './AnalysisModal';
+import RoommateCard from './RoommateCard';
+import { motion, AnimatePresence } from 'framer-motion';
+import wishIVideo from '../../assets/wishI.mp4';
 
 type DashboardLayoutProps = {
   state: DashboardState;
@@ -18,6 +21,21 @@ export default function DashboardLayout({
   onNewPack,
 }: DashboardLayoutProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
+  const [mathisCount, setMathisCount] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const handleAvatarClick = (username: string) => {
+    if (username === 'mathisglaude1') {
+      const newCount = mathisCount + 1;
+      setMathisCount(newCount);
+      if (newCount === 5) {
+        setShowVideo(true);
+        setMathisCount(0);
+      }
+    }
+  };
+
   const currentUser = state.roommates.find(({ id }) => id === state.auth.currentUserId);
   const canValidateRoll = Boolean(state.auth.currentUserId);
 
@@ -185,9 +203,8 @@ export default function DashboardLayout({
                 <h3 className="text-sm font-black uppercase tracking-[0.2em]">Journal des actions</h3>
                 <span className="text-[10px] font-mono uppercase text-slate-600 dark:text-slate-300">Entrées: {state.roommates.length}</span>
               </div>
-            </div>
-          </article>
-        </section>
+            </section>
+          </div>
 
         <section>
           <div className="mb-6 flex items-end justify-between gap-4">
@@ -211,8 +228,9 @@ export default function DashboardLayout({
                 <div className="flex items-center gap-3">
                   <img
                     alt={roommate.name}
-                    className="h-10 w-10 rounded-full object-cover"
+                    className="h-10 w-10 cursor-pointer rounded-full object-cover transition-transform hover:scale-110 active:scale-95"
                     src={roommate.avatar}
+                    onClick={() => handleAvatarClick(roommate.name)}
                   />
                   <div>
                     <p className="text-sm font-bold text-on-surface">{roommate.name}</p>
@@ -242,6 +260,7 @@ export default function DashboardLayout({
                 key={roommate.id}
                 roommate={roommate}
                 onAddRoll={onAddRoll}
+                onAvatarClick={() => handleAvatarClick(roommate.name)}
               />
             ))}
           </div>
@@ -254,6 +273,7 @@ export default function DashboardLayout({
             </span>
             Sécurisé avec Supabase et TanStack Query.
           </div>
+        </footer>
         </div>
       </main>
 
