@@ -80,23 +80,28 @@ export default function Dashboard() {
     });
   };
 
-  const handleNewPack = () => {
+  const handleAddPack = () => {
     if (!userProfile) return;
-    const rollsCount = window.prompt("Combien de rouleaux dans ce nouveau paquet ?", "16");
+    const rollsCount = window.prompt("Combien de rouleaux dans ce paquet ajouté ?", "16");
     if (rollsCount === null) return;
 
-    const totalRolls = parseInt(rollsCount.trim(), 10);
-    if (!Number.isFinite(totalRolls) || totalRolls <= 0) {
+    const rollsToAdd = parseInt(rollsCount.trim(), 10);
+    if (!Number.isFinite(rollsToAdd) || rollsToAdd <= 0) {
       window.alert('Veuillez entrer un nombre de rouleaux valide (supérieur à 0).');
       return;
     }
 
+    const { data: usages = [] } = useUsagesForPack(pack?.id); // already at component level
+    const currentTotalRolls = pack?.total_rolls || 0;
+    const currentUsedTotal = usages.length;
+    const currentRollsLeft = Math.max(0, currentTotalRolls - currentUsedTotal);
+
     const confirmed = window.confirm(
-      `Confirmer la création d'un nouveau pack de ${totalRolls} rouleaux ? Cette action réinitialise le pack en cours.`
+      `Confirmer l'ajout de ${rollsToAdd} rouleaux ? Le stock total passera de ${currentRollsLeft} à ${currentRollsLeft + rollsToAdd} rouleaux.`
     );
     if (!confirmed) return;
 
-    createPackMutation.mutate({ buyerId: userProfile.id, totalRolls });
+    createPackMutation.mutate({ buyerId: userProfile.id, totalRolls: currentRollsLeft + rollsToAdd });
   };
 
   const activeUsers = profiles?.length || 4;
@@ -191,7 +196,7 @@ export default function Dashboard() {
         state={state}
         onLogout={handleLogout}
         onAddRoll={handleAddRoll}
-        onNewPack={handleNewPack}
+        onNewPack={handleAddPack}
       />
     </>
   );

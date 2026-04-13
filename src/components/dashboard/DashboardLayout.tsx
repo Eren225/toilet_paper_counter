@@ -92,7 +92,7 @@ export default function DashboardLayout({
             onClick={onNewPack}
             type="button"
           >
-            Nouveau pack
+            Ajouter paquet
           </button>
           <button
             className="p-2 transition hover:opacity-70"
@@ -149,7 +149,7 @@ export default function DashboardLayout({
                   <span className="text-sm font-bold uppercase">{state.estimatedDepletion}</span>
                 </div>
                 <div className="ml-auto">
-                  <button className="bg-slate-900 px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-80 dark:bg-slate-50 dark:text-slate-900" onClick={onNewPack} type="button">Nouveau pack</button>
+                  <button className="bg-slate-900 px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-80 dark:bg-slate-50 dark:text-slate-900" onClick={onNewPack} type="button">Ajouter paquet</button>
                 </div>
               </div>
             </section>
