@@ -26,7 +26,7 @@ export default function DashboardLayout({
   const [showVideo, setShowVideo] = useState(false);
 
   const handleAvatarClick = (username: string) => {
-    if (username === 'mathisglaude1') {
+    if (username === 'Mathis_bite') {
       const newCount = mathisCount + 1;
       setMathisCount(newCount);
       if (newCount === 5) {
