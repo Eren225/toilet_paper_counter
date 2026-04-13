@@ -219,12 +219,12 @@ export default function DashboardLayout({
         <section>
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold text-on-surface">Colocataires</h2>
-              <p className="mt-1 text-on-surface-variant">
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50">Colocataires</h2>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">
                 Activité sur le paquet actuel.
               </p>
             </div>
-            <span className="hidden rounded-full bg-secondary-fixed px-4 py-2 text-sm font-semibold text-on-secondary-fixed md:inline-flex">
+            <span className="hidden rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 dark:bg-slate-800 dark:text-slate-100 md:inline-flex">
               {state.activeUsers} utilisateurs actifs
             </span>
           </div>
@@ -232,7 +232,7 @@ export default function DashboardLayout({
           <div className="md:hidden space-y-3">
             {state.roommates.map((roommate) => (
               <article
-                className="flex items-center justify-between rounded-2xl border border-outline-variant/20 bg-surface-container-lowest px-4 py-3"
+                className="flex items-center justify-between border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900"
                 key={roommate.id}
               >
                 <div className="flex items-center gap-3">
@@ -243,20 +243,20 @@ export default function DashboardLayout({
                     onClick={() => handleAvatarClick(roommate.name)}
                   />
                   <div>
-                    <p className="text-sm font-bold text-on-surface">{roommate.name}</p>
-                    <p className="text-xs text-on-surface-variant">{roommate.opened} rouleaux</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-slate-50">{roommate.name}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">{roommate.opened} rouleaux</p>
                   </div>
                 </div>
                 {roommate.id === state.auth.currentUserId ? (
                   <button
-                    className="rounded-full bg-primary px-3 py-2 text-xs font-bold text-on-primary"
+                    className="bg-slate-900 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white dark:bg-slate-50 dark:text-slate-900"
                     onClick={() => onAddRoll(roommate.id)}
                     type="button"
                   >
                     +1
                   </button>
                 ) : (
-                  <span className="text-xs font-medium text-on-surface-variant">{roommate.lastActive}</span>
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{roommate.lastActive}</span>
                 )}
               </article>
             ))}
@@ -277,8 +277,8 @@ export default function DashboardLayout({
         </section>
 
         <footer className="pb-8 text-center">
-          <div className="inline-flex items-center gap-3 rounded-full bg-surface-container px-5 py-4 text-sm font-medium text-on-surface-variant">
-            <span className="text-secondary">
+          <div className="inline-flex items-center gap-3 bg-slate-200 px-5 py-4 text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+            <span className="text-slate-900 dark:text-slate-50">
               <Icon name="shield" />
             </span>
             Sécurisé avec Supabase et TanStack Query.

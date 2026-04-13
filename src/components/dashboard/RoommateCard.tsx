@@ -14,30 +14,28 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
   return (
     <motion.article 
       whileHover={{ y: -4 }}
-      className="group rounded-[1.75rem] bg-surface-container-lowest p-6 shadow-[0_18px_40px_rgba(20,33,61,0.06)]"
+      className="group border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
     >
       <div className="mb-6 flex items-center gap-4">
         <img
           alt={roommate.name}
           onClick={onAvatarClick}
-          className={`${roommate.name.toLowerCase().includes('mathis_bite') ? 'cursor-pointer transition hover:scale-110 active:scale-95' : ''} h-14 w-14 rounded-full object-cover ring-4 ring-surface-container`}
+          className={`${roommate.name.toLowerCase().includes('mathis_bite') ? 'cursor-pointer transition hover:scale-110 active:scale-95' : ''} h-14 w-14 rounded-full object-cover ring-4 ring-slate-100 dark:ring-slate-800`}
           src={roommate.avatar}
         />
         <div>
-          <h3 className="text-lg font-bold text-on-surface">{roommate.name}</h3>
-          <p className="text-xs text-on-surface-variant">Dernière activité : {roommate.lastActive}</p>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">{roommate.name}</h3>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">Dernière activité : {roommate.lastActive}</p>
         </div>
       </div>
 
-      <div className="mb-6 rounded-2xl bg-surface-container-low p-4">
-        <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-on-surface-variant">
+      <div className="mb-6 bg-slate-100 p-4 dark:bg-slate-800">
+        <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
           Rouleaux ouverts
         </p>
         <motion.div 
           key={roommate.opened}
-          initial={{ scale: 1.5, color: 'var(--color-primary)' }}
-          animate={{ scale: 1, color: 'var(--color-on-surface)' }}
-          className="text-3xl font-black text-primary"
+          className="text-3xl font-black text-slate-900 dark:text-slate-50"
         >
           {roommate.opened}
         </motion.div>
@@ -45,7 +43,7 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
 
       <motion.button
         whileTap={isActiveUser && !isStockEmpty ? { scale: 0.95 } : {}}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-surface-container-high px-5 py-4 text-sm font-bold text-on-surface transition group-hover:bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-container))] group-hover:text-on-primary disabled:cursor-not-allowed disabled:opacity-50 disabled:group-hover:bg-surface-container-high disabled:group-hover:text-on-surface"
+        className="flex w-full items-center justify-center gap-2 bg-slate-900 px-5 py-4 text-[10px] font-bold uppercase tracking-widest text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200"
         disabled={!isActiveUser || isStockEmpty}
         onClick={() => onAddRoll(roommate.id)}
         type="button"
