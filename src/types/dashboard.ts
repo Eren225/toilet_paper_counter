@@ -21,6 +21,7 @@ export type DashboardState = {
   rollsLeft: number;
   usedTotal: number;
   percentLeft: number;
+  estimatedDepletion: string;
   activeUsers: number;
   lastBuyer: string;
   nextBuyer: string;

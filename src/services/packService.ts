@@ -38,5 +38,17 @@ export const PackService = {
 
     if (error) throw error;
     return data || [];
+  },
+
+  async updatePackTotalRolls(packId: string, totalRolls: number) {
+    const { data, error } = await supabaseClient
+      .from('packs')
+      .update({ total_rolls: totalRolls })
+      .eq('id', packId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 };

@@ -1,27 +1,27 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Plus Jakarta Sans", sans-serif;
-  --font-body: "Be Vietnam Pro", sans-serif;
-  
-  --color-primary: #0060ad;
-  --color-secondary: #136d41;
-  --color-tertiary: #586062;
-  --color-on-surface: #2e333a;
-  --color-on-surface-variant: #5b5f67;
-  --color-surface: #f9f9fe;
+  --font-display: "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --color-primary: #000000;
+  --color-secondary: #515f74;
+  --color-tertiary: #3b3b3b;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #474747;
+  --color-surface: #f7f9fb;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f2f3fa;
-  --color-surface-container: #eceef5;
-  --color-surface-container-high: #e6e8f0;
-  --color-primary-container: #68abff;
-  --color-on-primary-container: #002b52;
-  --color-outline: #8c919a;
-  --color-outline-variant: #aeb2bb;
-  --color-on-primary: #f8f8ff;
-  --color-secondary-fixed: #a1f5bc;
-  --color-on-secondary-fixed: #004a28;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-primary-container: #333b50;
+  --color-on-primary-container: #ffffff;
+  --color-outline: #777777;
+  --color-outline-variant: #c6c6c6;
+  --color-on-primary: #ffffff;
+  --color-secondary-fixed: #b9c7df;
+  --color-on-secondary-fixed: #0d1c2e;
 }
 
 @layer base {
@@ -39,9 +39,6 @@
     font-family: var(--font-body);
     margin: 0;
     min-height: 100vh;
-    background-image:
-      radial-gradient(circle at top right, rgba(104, 171, 255, 0.15), transparent 24rem),
-      radial-gradient(circle at bottom left, rgba(19, 109, 65, 0.08), transparent 28rem);
   }
   
   h1, h2, h3, .font-display {
@@ -49,22 +46,22 @@
     color: var(--color-on-surface);
     font-weight: 700;
   }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-surface-container-low);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-primary-container);
+  }
 }
 
 @layer utilities {
-  .hero-gradient {
-    background-image: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
-  }
-  
   .glass-panel {
-    background-color: rgba(249, 249, 254, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-  
-  .surface-card {
-    background-color: var(--color-surface-container-lowest);
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background-color: rgba(247, 249, 251, 0.95);
   }
 }

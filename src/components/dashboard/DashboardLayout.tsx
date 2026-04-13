@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import type { DashboardState } from '../../types/dashboard';
 import Icon from './Icon';
-import RoommateCard from './RoommateCard';
 import HistoryModal from './HistoryModal';
-import { motion, AnimatePresence } from 'framer-motion';
-import wishIVideo from '../../assets/wishI.mp4';
+import AnalysisModal from './AnalysisModal';
 
 type DashboardLayoutProps = {
   state: DashboardState;
@@ -20,188 +18,172 @@ export default function DashboardLayout({
   onNewPack,
 }: DashboardLayoutProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [mathisCount, setMathisCount] = useState(0);
-  const [showVideo, setShowVideo] = useState(false);
-
-  const handleAvatarClick = (name: string) => {
-    if (name.toLowerCase() === 'mathisglaude1' || name.toLowerCase().includes('mathisglaude1')) {
-      const newCount = mathisCount + 1;
-      setMathisCount(newCount);
-      if (newCount >= 5) {
-        setShowVideo(true);
-        setMathisCount(0);
-      }
-    }
-  };
   const currentUser = state.roommates.find(({ id }) => id === state.auth.currentUserId);
   const canValidateRoll = Boolean(state.auth.currentUserId);
 
-  // Dynamic Colors Logic
-  let stockColor = 'var(--color-primary)';
-  let gradientColor = 'linear-gradient(90deg,var(--color-primary),var(--color-primary-container))';
-  let blurClass = 'bg-primary/8';
-  let textClass = 'text-primary';
+  const stockLabel = state.rollsLeft === 0
+    ? 'Stock vide'
+    : state.percentLeft <= 25 || state.rollsLeft <= 3
+      ? 'Stock faible'
+      : 'Stock normal';
 
-  if (state.rollsLeft === 0) {
-    stockColor = '#E11D48'; // Red
-    gradientColor = 'linear-gradient(90deg,#E11D48,#FCA5A5)';
-    blurClass = 'bg-red-500/10';
-    textClass = 'text-red-500';
-  } else if (state.percentLeft <= 25 || state.rollsLeft <= 3) {
-    stockColor = '#F59E0B'; // Orange
-    gradientColor = 'linear-gradient(90deg,#F59E0B,#FCD34D)';
-    blurClass = 'bg-orange-500/10';
-    textClass = 'text-orange-500';
-  }
+  const stockTone = state.rollsLeft === 0
+    ? 'text-red-600 dark:text-red-400'
+    : state.percentLeft <= 25 || state.rollsLeft <= 3
+      ? 'text-amber-600 dark:text-amber-400'
+      : 'text-slate-900 dark:text-slate-50';
+
+  const progressWidth = `${Math.max(2, state.percentLeft)}%`;
+  const openedCurrentPack = Math.max(0, Math.min(state.totalRolls, state.totalRolls - state.rollsLeft));
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface">
-      {/* Modale Historique */}
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
       <HistoryModal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+      <AnalysisModal isOpen={isAnalysisOpen} onClose={() => setIsAnalysisOpen(false)} />
 
-      <header className="sticky top-0 z-40 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 backdrop-blur md:px-10">
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-on-primary shadow-[0_16px_40px_rgba(0,96,173,0.25)]">
-            PQ
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-secondary">4eme 204</p>
-            <h1 className="font-display text-xl font-black tracking-tight text-on-surface md:text-2xl">
-              PQ Counter
-            </h1>
+      <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-slate-50 px-6 dark:border-slate-800 dark:bg-slate-950">
+        <div className="flex items-center gap-8">
+          <span className="text-xl font-black tracking-tighter">Kikachié</span>
+          <div className="hidden items-center gap-6 md:flex">
+            <span className="border-b-2 border-slate-900 py-1 text-[10px] font-bold uppercase tracking-tight dark:border-slate-50">Inventaire</span>
+            <button className="py-1 text-[10px] font-bold uppercase tracking-tight text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-50" onClick={() => setIsHistoryOpen(true)} type="button">Historique</button>
+            <button className="py-1 text-[10px] font-bold uppercase tracking-tight text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-50" onClick={() => setIsAnalysisOpen(true)} type="button">Analyses</button>
           </div>
         </div>
-
         <div className="flex items-center gap-4">
-          <div className="hidden items-center gap-6 md:flex">
-            <span className="font-bold text-primary">Dashboard</span>
-          </div>
           <button
-            className="rounded-full p-2 text-on-surface-variant transition hover:bg-surface-container-low"
+            className="p-2 transition hover:opacity-70"
             type="button"
             onClick={() => setIsHistoryOpen(true)}
-            title="Ouvrir l'historique"
+            title="Historique"
           >
             <Icon name="history" />
           </button>
           <button
-            className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-on-primary shadow-[0_12px_30px_rgba(0,96,173,0.28)] transition hover:scale-[0.98] md:px-5 md:text-sm"
+            className="bg-slate-900 px-4 py-2 text-[10px] font-bold uppercase tracking-tight text-white transition-colors hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-100"
             onClick={onNewPack}
             type="button"
           >
             Nouveau pack
           </button>
+          <button
+            className="p-2 transition hover:opacity-70"
+            onClick={onLogout}
+            title="Logout"
+            type="button"
+          >
+            <Icon name="settings" />
+          </button>
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-28 pt-5 md:gap-10 md:px-10 md:pb-10 md:pt-6">
-        <section className="rounded-[1.5rem] bg-surface-container-low p-4 shadow-[0_16px_40px_rgba(25,40,72,0.05)] md:rounded-[2rem] md:p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
-            <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-[0.28em] text-on-surface-variant">
-                Connexion
-              </p>
-              <h2 className="mt-1 text-xl font-bold text-on-surface">Ton profil personnel</h2>
-              <p className="mt-1 text-sm text-on-surface-variant">
-                {state.auth.currentUserId
-                  ? `Connecté en tant que ${currentUser?.name || ''}`
-                  : 'Veuillez vous connecter pour signaler une consommation.'}
-              </p>
+      <main className="min-h-screen bg-slate-50 pt-16 dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl space-y-12 p-8">
+          <div className="flex flex-col justify-between gap-6 border-b border-slate-200 pb-8 dark:border-slate-800 md:flex-row md:items-end">
+            <div>
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">Tableau de bord</span>
+              <h1 className="mt-2 text-5xl font-black tracking-tighter text-slate-300 dark:text-slate-600">PRECISION TRACKING SYSTEM</h1>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Connecté: {currentUser?.name || 'Aucun utilisateur'}</p>
             </div>
-
-            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 md:w-auto">
-              <div className="sm:col-span-2" />
+            <div className="flex flex-col gap-3 sm:items-end">
               <button
-                className="flex-1 rounded-full bg-surface-container-high px-4 py-3 text-sm font-bold text-on-surface hover:bg-surface-container-highest transition"
-                onClick={onLogout}
+                className="flex items-center justify-center gap-2 bg-slate-900 px-6 py-3 text-sm font-black uppercase tracking-widest text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-50 dark:text-slate-900"
+                disabled={!canValidateRoll || state.rollsLeft === 0}
+                onClick={() => {
+                  if (state.auth.currentUserId) {
+                    onAddRoll(state.auth.currentUserId);
+                  }
+                }}
                 type="button"
               >
-                Déconnexion
+                <Icon name="plus" className="h-5 w-5" />
+                j&apos;ai ouvert un rouleau
               </button>
             </div>
           </div>
-        </section>
 
-        <section className="grid grid-cols-1 gap-8 md:grid-cols-12">
-          <article className="relative overflow-hidden rounded-[2rem] bg-surface-container-low p-8 shadow-[0_16px_40px_rgba(25,40,72,0.05)] md:col-span-8">
-            <div className="relative z-10">
-              <span className="text-xs font-bold uppercase tracking-[0.28em] text-secondary">
-                Stock actuel
-              </span>
-              <h2 className="mt-3 flex items-baseline gap-3 text-5xl font-black tracking-[-0.06em] text-on-surface md:mt-4 md:text-8xl">
-                <motion.span
-                  key={state.rollsLeft}
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className={textClass}
-                  style={{ color: stockColor }}
-                >
-                  {state.rollsLeft}
-                </motion.span>
-                <span className="text-xl font-medium tracking-normal text-on-surface-variant md:text-3xl">
-                  rouleaux restants
-                </span>
-              </h2>
-
-              <div className="mt-8 flex items-center gap-4">
-                <div className="h-3 flex-1 overflow-hidden rounded-full bg-surface-container-high">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${state.percentLeft}%` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="h-full rounded-full"
-                    style={{ background: gradientColor }}
-                  />
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
+            <section className="relative col-span-1 flex min-h-[400px] flex-col justify-between overflow-hidden border border-slate-200 bg-slate-100 p-8 dark:border-slate-800 dark:bg-slate-900 md:col-span-8">
+              <div className="relative z-10 flex flex-col gap-2">
+                <span className="text-[clamp(2rem,10vw,72px)] font-black leading-none tracking-widest text-slate-300 dark:text-slate-600">ROULEAUX</span>
+                <div className="h-1 w-full bg-slate-300 dark:bg-slate-700">
+                  <div className="h-full bg-slate-900 dark:bg-slate-50" style={{ width: progressWidth }} />
                 </div>
-                <span className="font-bold" style={{ color: stockColor }}>{state.percentLeft}%</span>
+                <span className={`text-[clamp(5rem,25vw,180px)] font-black leading-none tracking-tighter ${stockTone}`}>{state.rollsLeft}</span>
+              </div>
+              <div className="relative z-10 flex flex-wrap items-center gap-8 border-t border-slate-300 pt-8 dark:border-slate-700">
+                <div>
+                  <span className="mb-1 block text-[10px] font-bold uppercase text-slate-600 dark:text-slate-300">État</span>
+                  <span className={`text-sm font-bold uppercase ${stockTone}`}>{stockLabel}</span>
+                </div>
+                <div>
+                  <span className="mb-1 block text-[10px] font-bold uppercase text-slate-600 dark:text-slate-300">Rupture estimée</span>
+                  <span className="text-sm font-bold uppercase">{state.estimatedDepletion}</span>
+                </div>
+                <div className="ml-auto">
+                  <button className="bg-slate-900 px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-80 dark:bg-slate-50 dark:text-slate-900" onClick={onNewPack} type="button">Nouveau pack</button>
+                </div>
+              </div>
+            </section>
+
+            <section className="col-span-1 flex flex-col border-l-4 border-slate-900 bg-slate-200 p-8 dark:border-slate-50 dark:bg-slate-800 md:col-span-4">
+              <span className="mb-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-200">
+                <span className="h-2 w-2 bg-slate-900 dark:bg-slate-50" />
+                Statistiques de consommation
+              </span>
+              <div className="flex-1 space-y-10">
+                <div>
+                  <span className="block text-[40px] font-black leading-none tracking-tighter">{state.percentLeft}%</span>
+                  <span className="mt-2 block text-[10px] font-bold uppercase text-slate-600 dark:text-slate-300">Capacité restante</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-100 p-4 dark:bg-slate-900">
+                    <span className="text-xl font-bold">{state.usedTotal}</span>
+                    <span className="block text-[9px] font-bold uppercase text-slate-600 dark:text-slate-300">Total utilisé</span>
+                  </div>
+                  <div className="bg-slate-100 p-4 dark:bg-slate-900">
+                    <span className="text-xl font-bold">{state.activeUsers}</span>
+                    <span className="block text-[9px] font-bold uppercase text-slate-600 dark:text-slate-300">Utilisateurs actifs</span>
+                  </div>
+                </div>
+                <div className="bg-slate-100 p-4 dark:bg-slate-900">
+                  <span className="text-xl font-bold">{openedCurrentPack}/{state.totalRolls}</span>
+                  <span className="block text-[9px] font-bold uppercase text-slate-600 dark:text-slate-300">Rouleaux ouverts (pack actuel)</span>
+                </div>
+
+              </div>
+            </section>
+
+            <section className="md:col-span-12">
+              <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <article className="border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                    Dernier acheteur
+                  </p>
+                  <h4 className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-50">
+                    {state.lastBuyer}
+                  </h4>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                    Cette personne a payé le paquet en cours.
+                  </p>
+                </article>
+
+                <article className="border border-slate-200 bg-slate-100 p-5 dark:border-slate-800 dark:bg-slate-900">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                    Prochain acheteur
+                  </p>
+                  <h4 className="mt-2 text-2xl font-black text-slate-900 dark:text-slate-50">
+                    {state.nextBuyer}
+                  </h4>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                    Ce sera son tour au prochain paquet.
+                  </p>
+                </article>
               </div>
 
-              <p className="mt-5 text-sm text-on-surface-variant">
-                Pack de {state.totalRolls} rouleaux. Dernier achat déclaré par {state.lastBuyer}.
-              </p>
-            </div>
-
-            <div className={`absolute -right-14 -top-14 h-56 w-56 rounded-full blur-3xl transition-colors duration-700 ${blurClass}`} />
-          </article>
-
-          <article className="flex flex-col items-center justify-center rounded-[1.5rem] bg-primary p-6 text-center text-on-primary shadow-[0_20px_50px_rgba(0,96,173,0.25)] md:col-span-4 md:rounded-[2rem] md:p-8">
-            <span className="mb-2 text-sm font-medium text-white/70">Total consommé</span>
-            <div className="text-5xl font-black md:text-6xl">{state.usedTotal}</div>
-          </article>
-        </section>
-
-        <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <article className="rounded-[1.75rem] border border-primary/10 bg-surface-container-lowest p-6 shadow-[0_16px_40px_rgba(25,40,72,0.05)]">
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-on-surface-variant">
-              Achat actuel
-            </p>
-            <div className="mt-4 flex items-end justify-between gap-4">
-              <div>
-                <h3 className="text-3xl font-black text-on-surface">{state.lastBuyer}</h3>
-                <p className="mt-2 max-w-md text-sm text-on-surface-variant">
-                  C&apos;est la personne qui a acheté le pack en cours. Cette info reste visible pour éviter les débats en fin de cycle.
-                </p>
-              </div>
-              <div className="rounded-2xl bg-primary/8 px-4 py-3 text-sm font-bold text-primary">
-                Pack en cours
-              </div>
-            </div>
-          </article>
-
-          <article className="rounded-[1.75rem] bg-secondary p-6 text-on-secondary shadow-[0_18px_45px_rgba(19,109,65,0.22)]">
-            <p className="text-xs font-bold uppercase tracking-[0.28em] text-white/70">
-              Prochain tour
-            </p>
-            <div className="mt-4 flex items-end justify-between gap-4">
-              <div>
-                <h3 className="text-3xl font-black text-white">{state.nextBuyer}</h3>
-                <p className="mt-2 max-w-md text-sm text-white/75">
-                  La rotation suit l&apos;ordre fixe des colocataires. Au prochain paquet vide, ce sera à {state.nextBuyer} de payer.
-                </p>
-              </div>
-              <div className="rounded-2xl bg-white/15 px-4 py-3 text-sm font-bold text-white">
-                Tour suivant
+              <div className="mb-6 flex items-end justify-between">
+                <h3 className="text-sm font-black uppercase tracking-[0.2em]">Journal des actions</h3>
+                <span className="text-[10px] font-mono uppercase text-slate-600 dark:text-slate-300">Entrées: {state.roommates.length}</span>
               </div>
             </div>
           </article>
@@ -229,9 +211,8 @@ export default function DashboardLayout({
                 <div className="flex items-center gap-3">
                   <img
                     alt={roommate.name}
-                    className={`h-10 w-10 rounded-full object-cover ${roommate.name.toLowerCase().includes('mathisglaude1') ? 'cursor-pointer active:scale-95 transition' : ''}`}
+                    className="h-10 w-10 rounded-full object-cover"
                     src={roommate.avatar}
-                    onClick={() => handleAvatarClick(roommate.name)}
                   />
                   <div>
                     <p className="text-sm font-bold text-on-surface">{roommate.name}</p>
@@ -261,7 +242,6 @@ export default function DashboardLayout({
                 key={roommate.id}
                 roommate={roommate}
                 onAddRoll={onAddRoll}
-                onAvatarClick={() => handleAvatarClick(roommate.name)}
               />
             ))}
           </div>
@@ -274,13 +254,14 @@ export default function DashboardLayout({
             </span>
             Sécurisé avec Supabase et TanStack Query.
           </div>
-        </footer>
+        </div>
       </main>
 
-      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 md:hidden">
+        <div className="px-4 pb-2 pt-3">
         <button
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-black text-on-primary shadow-[0_18px_42px_rgba(0,96,173,0.34)] transition hover:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!canValidateRoll}
+          className="flex w-full items-center justify-center gap-2 bg-slate-900 px-6 py-4 text-sm font-black uppercase tracking-widest text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-50 dark:text-slate-900"
+          disabled={!canValidateRoll || state.rollsLeft === 0}
           onClick={() => {
             if (state.auth.currentUserId) {
               onAddRoll(state.auth.currentUserId);
@@ -288,9 +269,10 @@ export default function DashboardLayout({
           }}
           type="button"
         >
-          <Icon name="plus" className="h-6 w-6" />
-          Valider mon rouleau
+          <Icon name="plus" className="h-5 w-5" />
+          j&apos;ai ouvert un rouleau
         </button>
+      </div>
       </div>
 
       {/* EASTER EGG VIDEO GLOBALE */}

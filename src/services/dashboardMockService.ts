@@ -58,6 +58,7 @@ function buildState(currentUserId: RoommateId | '' = ''): DashboardState {
     rollsLeft,
     usedTotal,
     percentLeft,
+    estimatedDepletion: 'dans 2 jours',
     activeUsers: roommates.length,
     lastBuyer,
     nextBuyer,

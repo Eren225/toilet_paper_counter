@@ -37,5 +37,17 @@ export const AuthService = {
       .select('*');
     if (error) throw error;
     return data;
+  },
+
+  async updateProfileName(profileId: string, name: string) {
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .update({ name })
+      .eq('id', profileId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 };
