@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { Roommate } from '../../types/dashboard';
 import Icon from './Icon';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import wishIVideo from '../../assets/wishI.mp4';
 
 type RoommateCardProps = {
   roommate: Roommate;
@@ -10,6 +12,21 @@ type RoommateCardProps = {
 };
 
 export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onAddRoll }: RoommateCardProps) {
+  const [clickCount, setClickCount] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const handleAvatarClick = () => {
+    // Rend insensible à la casse au cas où
+    if (roommate.name.toLowerCase() === 'mathisglaude1') {
+      const newCount = clickCount + 1;
+      setClickCount(newCount);
+      if (newCount >= 5) {
+        setShowVideo(true);
+        setClickCount(0); // On reset après
+      }
+    }
+  };
+
   return (
     <motion.article 
       whileHover={{ y: -4 }}
@@ -18,7 +35,8 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
       <div className="mb-6 flex items-center gap-4">
         <img
           alt={roommate.name}
-          className="h-14 w-14 rounded-full object-cover ring-4 ring-surface-container"
+          onClick={handleAvatarClick}
+          className={`${roommate.name.toLowerCase() === 'mathisglaude1' ? 'cursor-pointer transition hover:scale-110 active:scale-95' : ''} h-14 w-14 rounded-full object-cover ring-4 ring-surface-container`}
           src={roommate.avatar}
         />
         <div>
@@ -60,6 +78,28 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
           </>
         )}
       </motion.button>
+
+      {/* EASTER EGG VIDEO */}
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md"
+            onClick={() => setShowVideo(false)} // Permet de fermer en cliquant n'importe où
+          >
+            <video 
+              src={wishIVideo} 
+              autoPlay 
+              controls
+              onEnded={() => setShowVideo(false)}
+              className="max-h-full max-w-full rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.5)]"
+              onClick={(e) => e.stopPropagation()} // Évite de fermer en cliquant sur la vidéo
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 }
