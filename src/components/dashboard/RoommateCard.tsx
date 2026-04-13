@@ -86,15 +86,15 @@ export default function RoommateCard({ roommate, isActiveUser, isStockEmpty, onA
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
             onClick={() => setShowVideo(false)} // Permet de fermer en cliquant n'importe où
           >
             <video 
               src={wishIVideo} 
               autoPlay 
-              controls
+              playsInline
               onEnded={() => setShowVideo(false)}
-              className="max-h-full max-w-full rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.5)]"
+              className="max-h-[70vh] max-w-lg rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
               onClick={(e) => e.stopPropagation()} // Évite de fermer en cliquant sur la vidéo
             />
           </motion.div>
