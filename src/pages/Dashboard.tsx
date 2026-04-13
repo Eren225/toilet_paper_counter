@@ -49,7 +49,35 @@ export default function Dashboard() {
       alert("Il n'y a pas de paquet en cours ! Veuillez créer un nouveau pack d'abord.");
       return;
     }
-    incrementRollMutation.mutate({ userId: roommateId, packId: pack.id });
+    
+    // Optimistically act and trigger Toast
+    incrementRollMutation.mutate({ userId: roommateId, packId: pack.id }, {
+      onSuccess: (newUsage) => {
+        toast((t) => (
+          <div className="flex items-center gap-3">
+            <span className="font-medium text-sm">🧻 1 rouleau consommé !</span>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                deleteUsageMutation.mutate({ usageId: newUsage.id });
+                toast.success("Action annulée.", { icon: '⏪' });
+              }}
+              className="rounded-full bg-outline-variant/20 px-3 py-1 text-xs font-bold transition hover:bg-outline-variant/30"
+            >
+              Annuler
+            </button>
+          </div>
+        ), {
+          duration: 5000,
+          position: 'bottom-center',
+          style: {
+            borderRadius: '20px',
+            background: 'var(--color-surface-container-high)',
+            color: 'var(--color-on-surface)',
+          },
+        });
+      }
+    });
   };
 
   const handleNewPack = () => {
@@ -120,11 +148,14 @@ export default function Dashboard() {
   }
 
   return (
-    <DashboardLayout
-      state={state}
-      onLogout={handleLogout}
-      onAddRoll={handleAddRoll}
-      onNewPack={handleNewPack}
-    />
+    <>
+      <Toaster />
+      <DashboardLayout
+        state={state}
+        onLogout={handleLogout}
+        onAddRoll={handleAddRoll}
+        onNewPack={handleNewPack}
+      />
+    </>
   );
 }
